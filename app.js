@@ -1,3 +1,4 @@
+// constructor for human object
 function Human(humanData) {
     this.name = humanData.name;
     this.height = humanData.height;
@@ -12,6 +13,7 @@ function Human(humanData) {
     }
 }
 
+// constructor for dinosaur object
 function Dino(dinosaurData) {
     this.species = dinosaurData.species;
     this.weight = dinosaurData.weight;
@@ -25,7 +27,6 @@ function Dino(dinosaurData) {
         return (humanDiet === this.diet) ? 'We have the same diet': 'My diet is different than yours';
     };
     this.compareWeight = (humanWeight) => {
-        const weightRatio = (this.weight / humanWeight).toFixed(1);
         return humanWeight === this.weight ?
             'We weight the same'
             :
@@ -39,10 +40,12 @@ function Dino(dinosaurData) {
     }
 }
 
+// constructor for App object, containing human and dinosaurs objects inside
 function App() {
     this.dinos = [];
     this.human = new Human({});
 
+    // fetch dinos data from json file, and create all 6 facts for all creatures
     this.setDinos = async () => {
         const dinoJsonData = await getDinosData();
 
@@ -59,6 +62,7 @@ function App() {
             return newDino;
         });
     };
+    // method for creating html human tile
     this.createHumanTile = () => {
         const humanDiv = document.createElement("div");
         const gridDiv = document.getElementById('grid');
@@ -71,6 +75,7 @@ function App() {
 
         gridDiv.insertBefore(humanDiv, target);
     };
+    // method for creating single html dino tile
     this.createDinoTile = (dinoData) => {
         const dinoDiv = document.createElement("div");
         const gridDiv = document.getElementById('grid');
@@ -88,10 +93,12 @@ function App() {
             <p>${facts[randomFactId]}</p>`;
         gridDiv.append(dinoDiv);
     };
+    // method for hiding a form after user enter all required data in form
     this.hideForm = () => {
         const formDiv = document.getElementById('dino-compare');
         formDiv.style.display = 'none';
     };
+    // method to show tiles mixed human and dinos
     this.showTiles = () => {
         this.hideForm();
         const newDiv = document.createElement("div");
@@ -104,6 +111,7 @@ function App() {
     }
 }
 
+// fetch all data from json file
 const getDinosData = () => {
     return fetch("./dino.json")
         .then(response => response.json())
@@ -119,6 +127,7 @@ const startApp = () => {
         weight
     } = app.human;
 
+    // validate form, if all required data entered
     const errorMessage = document.getElementById('error');
     if (name === "") {
         errorMessage.innerHTML = '<p>Please enter a name</p>';
@@ -132,13 +141,11 @@ const startApp = () => {
     }
 
     app.setDinos()
-        .then(() => {
-            console.log('app dinos: ', app);
-            app.showTiles();
-        })
+        .then(() => app.showTiles())
         .catch(console.error);
 }
 
-(function() {
+// IIFE function which listens for submit button click and run startApp method
+(() => {
     document.getElementById('btn').addEventListener('click', () => startApp());
 })();
